@@ -20,47 +20,43 @@ jobs:
           python-version: '3.12'
 
       - name: Install dependencies
-        run: pip install requests beautifulsoup4 lxml
+        run: pip install requests
 
-      - name: Check page for changes
+      - name: Check for changes
         id: check
         run: python scripts/check_page.py
 
-      - name: Send push notification (ntfy.sh)
+      - name: Send web push (OneSignal)
         if: steps.check.outputs.changed == 'true'
-        env:
-          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
         run: |
           curl -s \
-            -H "Title: MD DNR Trout Stocking Updated" \
-            -H "Priority: default" \
-            -H "Tags: fish,maryland" \
-            -H "Click: https://dnr.maryland.gov/fisheries/pages/trout/stocking.aspx" \
-            -d "${{ steps.check.outputs.summary }}" \
-            "https://ntfy.sh/${NTFY_TOPIC}"
+            -H "Authorization: Basic ${{ secrets.ONESIGNAL_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "app_id": "${{ secrets.ONESIGNAL_APP_ID }}",
+              "included_segments": ["All"],
+              "headings": {"en": "Gunpowder Falls Stocking Updated"},
+              "contents": {"en": "${{ steps.check.outputs.summary }}"},
+              "url": "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
+            }' \
+            https://onesignal.com/api/v1/notifications
 
       - name: Send email notification
-        if: steps.check.outputs.changed == 'true'
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
           server_port: 465
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: "MD DNR Trout Stocking Page Updated"
+          subject: "${{ steps.check.outputs.email_subject }}"
           to: ${{ secrets.EMAIL_TO }}
           from: Trout Stocking Watcher <${{ secrets.EMAIL_USERNAME }}>
-          body: |
-            ${{ steps.check.outputs.summary }}
+          body: "${{ steps.check.outputs.email_body }}"
 
-            View the page:
-            https://dnr.maryland.gov/fisheries/pages/trout/stocking.aspx
-
-      - name: Commit updated hash
-        if: steps.check.outputs.changed == 'true'
+      - name: Commit updated data
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/last_hash.txt data/last_content.txt
-          git commit -m "chore: update stored page snapshot [skip ci]"
+          git add data/gunpowder_rows.json data/last_check.json
+          git diff --cached --quiet || git commit -m "chore: update stocking snapshot [skip ci]"
           git push

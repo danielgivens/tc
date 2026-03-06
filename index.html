@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gunpowder Falls Trout Stocking</title>
+  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+  <script>
+    window.OneSignalDeferred = window.OneSignalDeferred || [];
+    OneSignalDeferred.push(async function(OneSignal) {
+      await OneSignal.init({ appId: "REPLACE_WITH_ONESIGNAL_APP_ID" });
+    });
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #f0f4f8;
+      color: #1a2332;
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1a4a2e 0%, #2d7a4f 100%);
+      color: #fff;
+      padding: 1.5rem 1.25rem 1rem;
+    }
+
+    header h1 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+    }
+
+    header p.sub {
+      font-size: 0.85rem;
+      opacity: 0.8;
+      margin-top: 0.2rem;
+    }
+
+    .status-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-top: 1rem;
+      font-size: 0.8rem;
+    }
+
+    .status-bar .pill {
+      background: rgba(255,255,255,0.15);
+      border-radius: 99px;
+      padding: 0.25rem 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .pill.changed { background: #e65c00; }
+    .pill.ok      { background: rgba(255,255,255,0.12); }
+    .pill.error   { background: #b91c1c; }
+
+    #subscribe-btn {
+      margin-left: auto;
+      background: rgba(255,255,255,0.2);
+      border: 1px solid rgba(255,255,255,0.4);
+      color: #fff;
+      border-radius: 99px;
+      padding: 0.3rem 0.9rem;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    #subscribe-btn:hover { background: rgba(255,255,255,0.3); }
+    #subscribe-btn.subscribed {
+      background: rgba(255,255,255,0.1);
+      border-color: rgba(255,255,255,0.2);
+      opacity: 0.7;
+      cursor: default;
+    }
+
+    main { padding: 1.25rem; max-width: 900px; margin: 0 auto; }
+
+    .section-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #64748b;
+      margin: 1.5rem 0 0.5rem;
+    }
+
+    .section-label:first-child { margin-top: 0; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.07);
+      font-size: 0.88rem;
+    }
+
+    thead th {
+      background: #f8fafc;
+      text-align: left;
+      padding: 0.65rem 0.9rem;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #64748b;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    tbody tr { border-bottom: 1px solid #f1f5f9; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #f8fafc; }
+
+    td { padding: 0.75rem 0.9rem; vertical-align: top; }
+
+    .date-cell { white-space: nowrap; color: #475569; font-size: 0.82rem; }
+    .fish-cell { font-weight: 600; white-space: nowrap; }
+    .regs-cell { font-size: 0.8rem; color: #64748b; }
+
+    /* NEW row */
+    tr.new-row { background: #f0fdf4 !important; }
+    tr.new-row:hover { background: #dcfce7 !important; }
+    tr.new-row td { border-left: 3px solid #22c55e; }
+    tr.new-row td:not(:first-child) { border-left: none; }
+
+    .badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border-radius: 4px;
+      padding: 0.15rem 0.4rem;
+      margin-left: 0.4rem;
+      vertical-align: middle;
+    }
+    .badge.new  { background: #22c55e; color: #fff; }
+    .badge.gone { background: #ef4444; color: #fff; }
+
+    /* GONE rows */
+    tr.gone-row { background: #fef2f2 !important; }
+    tr.gone-row td { color: #94a3b8; text-decoration: line-through; }
+    tr.gone-row td:first-child { border-left: 3px solid #ef4444; text-decoration: none; }
+
+    .empty-state {
+      text-align: center;
+      padding: 2rem;
+      color: #94a3b8;
+      font-size: 0.9rem;
+    }
+
+    .error-box {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 8px;
+      padding: 1rem;
+      color: #b91c1c;
+      font-size: 0.85rem;
+    }
+
+    @media (max-width: 600px) {
+      thead th.hide-mobile, td.hide-mobile { display: none; }
+      .fish-cell { font-size: 0.82rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🎣 Gunpowder Falls Trout Stocking</h1>
+  <p class="sub">Monitoring <a href="https://webapps02.dnr.state.md.us/fisheries/stocking/stockingtable.html"
+    style="color:rgba(255,255,255,0.75);text-decoration:none">MD DNR stocking data</a></p>
+
+  <div class="status-bar">
+    <span class="pill ok" id="last-checked">Loading…</span>
+    <span class="pill" id="change-pill" style="display:none"></span>
+    <button id="subscribe-btn">🔔 Subscribe</button>
+  </div>
+</header>
+
+<main>
+  <div id="content">
+    <div class="empty-state">Loading stocking data…</div>
+  </div>
+</main>
+
+<script>
+const SPECIES = { RB: 'Rainbow', GN: 'Golden', BN: 'Brown' };
+
+function rowKey(r) {
+  return [r.ActivityDate, r.LOCATION, r.Species, r.NumOfFish].join('|');
+}
+
+function fmtDate(iso) {
+  if (!iso) return '';
+  if (iso.startsWith('/Date(')) {
+    const ms = parseInt(iso.slice(6));
+    return new Date(ms).toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
+  }
+  const d = new Date(iso);
+  if (isNaN(d)) return iso.slice(0, 10);
+  return d.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric', timeZone: 'UTC' });
+}
+
+function fmtFish(r) {
+  const abbr = r._species_abbr || r.Species || '';
+  const name = SPECIES[abbr] || abbr;
+  return `${Number(r.NumOfFish).toLocaleString()} ${name}`;
+}
+
+function timeAgo(isoStr) {
+  const diff = Math.floor((Date.now() - new Date(isoStr)) / 1000);
+  if (diff < 60) return 'just now';
+  if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+  if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+  return `${Math.floor(diff / 86400)}d ago`;
+}
+
+function buildTable(rows, newKeySet, goneRows) {
+  if (!rows.length && !goneRows.length) {
+    return '<div class="empty-state">No Gunpowder Falls stocking data found.</div>';
+  }
+
+  const html = [];
+
+  if (rows.length) {
+    html.push('<p class="section-label">Current stockings</p>');
+    html.push(`
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Location</th>
+            <th>Fish</th>
+            <th class="hide-mobile">Regulations</th>
+          </tr>
+        </thead>
+        <tbody>
+    `);
+
+    for (const r of rows) {
+      const key = rowKey(r);
+      const isNew = newKeySet.has(key);
+      html.push(`
+        <tr class="${isNew ? 'new-row' : ''}">
+          <td class="date-cell">${fmtDate(r.ActivityDate)}${isNew ? '<span class="badge new">New</span>' : ''}</td>
+          <td>${r.LOCATION || ''}</td>
+          <td class="fish-cell">${fmtFish(r)}</td>
+          <td class="regs-cell hide-mobile">${r.RegulationDetails || ''}</td>
+        </tr>
+      `);
+    }
+
+    html.push('</tbody></table>');
+  }
+
+  if (goneRows.length) {
+    html.push('<p class="section-label">Recently removed from feed</p>');
+    html.push(`
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Location</th>
+            <th>Fish</th>
+            <th class="hide-mobile">Regulations</th>
+          </tr>
+        </thead>
+        <tbody>
+    `);
+    for (const r of goneRows) {
+      html.push(`
+        <tr class="gone-row">
+          <td class="date-cell"><span class="badge gone">Gone</span></td>
+          <td>${fmtDate(r.ActivityDate)} — ${r.LOCATION || ''}</td>
+          <td class="fish-cell">${fmtFish(r)}</td>
+          <td class="regs-cell hide-mobile">${r.RegulationDetails || ''}</td>
+        </tr>
+      `);
+    }
+    html.push('</tbody></table>');
+  }
+
+  return html.join('');
+}
+
+async function load() {
+  try {
+    const [rowsRes, metaRes] = await Promise.all([
+      fetch('data/gunpowder_rows.json?t=' + Date.now()),
+      fetch('data/last_check.json?t=' + Date.now()),
+    ]);
+
+    const rows = await rowsRes.json();
+    const meta = await metaRes.json();
+
+    // Status bar
+    document.getElementById('last-checked').textContent =
+      '⏱ Last checked ' + timeAgo(meta.timestamp);
+
+    if (meta.error) {
+      document.getElementById('change-pill').outerHTML =
+        `<div class="error-box">Error during last check: ${meta.error}</div>`;
+    } else if (meta.changed) {
+      const pill = document.getElementById('change-pill');
+      pill.textContent = '🆕 Changes detected';
+      pill.classList.add('changed');
+      pill.style.display = '';
+    }
+
+    const newKeySet = new Set(meta.new_keys || []);
+    const goneRows = meta.gone_rows || [];
+
+    document.getElementById('content').innerHTML =
+      buildTable(rows, newKeySet, goneRows);
+
+  } catch (err) {
+    document.getElementById('content').innerHTML =
+      `<div class="error-box">Failed to load data: ${err.message}</div>`;
+  }
+}
+
+// Subscribe button
+document.getElementById('subscribe-btn').addEventListener('click', async () => {
+  try {
+    const permission = await Notification.requestPermission();
+    if (permission === 'granted') {
+      const btn = document.getElementById('subscribe-btn');
+      btn.textContent = '✓ Subscribed';
+      btn.classList.add('subscribed');
+      btn.disabled = true;
+    }
+  } catch (e) {
+    console.warn('Push permission error:', e);
+  }
+});
+
+// Update "X ago" every minute
+load();
+setInterval(() => load(), 60_000);
+</script>
+
+</body>
+</html>
