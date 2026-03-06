@@ -1,0 +1,66 @@
+name: Check MD DNR Trout Stocking Page
+
+on:
+  schedule:
+    - cron: '0 7,13,19 * * *'  # 7am, 1pm, 7pm UTC (3am, 9am, 3pm ET)
+  workflow_dispatch:            # Allow manual trigger from GitHub UI
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4 lxml
+
+      - name: Check page for changes
+        id: check
+        run: python scripts/check_page.py
+
+      - name: Send push notification (ntfy.sh)
+        if: steps.check.outputs.changed == 'true'
+        env:
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+        run: |
+          curl -s \
+            -H "Title: MD DNR Trout Stocking Updated" \
+            -H "Priority: default" \
+            -H "Tags: fish,maryland" \
+            -H "Click: https://dnr.maryland.gov/fisheries/pages/trout/stocking.aspx" \
+            -d "${{ steps.check.outputs.summary }}" \
+            "https://ntfy.sh/${NTFY_TOPIC}"
+
+      - name: Send email notification
+        if: steps.check.outputs.changed == 'true'
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "MD DNR Trout Stocking Page Updated"
+          to: ${{ secrets.EMAIL_TO }}
+          from: Trout Stocking Watcher <${{ secrets.EMAIL_USERNAME }}>
+          body: |
+            ${{ steps.check.outputs.summary }}
+
+            View the page:
+            https://dnr.maryland.gov/fisheries/pages/trout/stocking.aspx
+
+      - name: Commit updated hash
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/last_hash.txt data/last_content.txt
+          git commit -m "chore: update stored page snapshot [skip ci]"
+          git push
