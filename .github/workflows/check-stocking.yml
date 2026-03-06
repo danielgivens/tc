@@ -26,22 +26,8 @@ jobs:
         id: check
         run: python scripts/check_page.py
 
-      - name: Send web push (OneSignal)
-        if: steps.check.outputs.changed == 'true'
-        run: |
-          curl -s \
-            -H "Authorization: Basic ${{ secrets.ONESIGNAL_API_KEY }}" \
-            -H "Content-Type: application/json" \
-            -d '{
-              "app_id": "${{ secrets.ONESIGNAL_APP_ID }}",
-              "included_segments": ["All"],
-              "headings": {"en": "Gunpowder Falls Stocking Updated"},
-              "contents": {"en": "${{ steps.check.outputs.summary }}"},
-              "url": "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
-            }' \
-            https://onesignal.com/api/v1/notifications
-
       - name: Send email notification
+        continue-on-error: true
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com

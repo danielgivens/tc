@@ -4,19 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gunpowder Falls Trout Stocking</title>
-  <script>
-    const ONESIGNAL_APP_ID = "REPLACE_WITH_ONESIGNAL_APP_ID";
-    if (ONESIGNAL_APP_ID && !ONESIGNAL_APP_ID.startsWith("REPLACE")) {
-      const s = document.createElement("script");
-      s.src = "https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js";
-      s.defer = true;
-      document.head.appendChild(s);
-      window.OneSignalDeferred = window.OneSignalDeferred || [];
-      OneSignalDeferred.push(async function(OneSignal) {
-        await OneSignal.init({ appId: ONESIGNAL_APP_ID });
-      });
-    }
-  </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -67,24 +54,6 @@
     .pill.ok      { background: rgba(255,255,255,0.12); }
     .pill.error   { background: #b91c1c; }
 
-    #subscribe-btn {
-      margin-left: auto;
-      background: rgba(255,255,255,0.2);
-      border: 1px solid rgba(255,255,255,0.4);
-      color: #fff;
-      border-radius: 99px;
-      padding: 0.3rem 0.9rem;
-      font-size: 0.8rem;
-      cursor: pointer;
-      transition: background 0.15s;
-    }
-    #subscribe-btn:hover { background: rgba(255,255,255,0.3); }
-    #subscribe-btn.subscribed {
-      background: rgba(255,255,255,0.1);
-      border-color: rgba(255,255,255,0.2);
-      opacity: 0.7;
-      cursor: default;
-    }
 
     main { padding: 1.25rem; max-width: 900px; margin: 0 auto; }
 
@@ -188,7 +157,6 @@
   <div class="status-bar">
     <span class="pill ok" id="last-checked">Loading…</span>
     <span class="pill" id="change-pill" style="display:none"></span>
-    <button id="subscribe-btn">🔔 Subscribe</button>
   </div>
 </header>
 
@@ -340,21 +308,6 @@ async function load() {
       `<div class="error-box">Failed to load data: ${err.message}</div>`;
   }
 }
-
-// Subscribe button
-document.getElementById('subscribe-btn').addEventListener('click', async () => {
-  try {
-    const permission = await Notification.requestPermission();
-    if (permission === 'granted') {
-      const btn = document.getElementById('subscribe-btn');
-      btn.textContent = '✓ Subscribed';
-      btn.classList.add('subscribed');
-      btn.disabled = true;
-    }
-  } catch (e) {
-    console.warn('Push permission error:', e);
-  }
-});
 
 // Update "X ago" every minute
 load();
