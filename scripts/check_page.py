@@ -85,7 +85,7 @@ def fmt_date(iso: str) -> str:
 def fmt_row(r: dict, prefix: str = "   ") -> str:
     date = fmt_date(r.get("ActivityDate", ""))
     location = r.get("LOCATION", "")
-    count = r.get("NumOfFish", 0)
+    count = int(r.get("NumOfFish") or 0)
     species = r.get("_species_abbr", r.get("Species", ""))
     regs = r.get("RegulationDetails", "")
     return f"{prefix}{date}  |  {location}  |  {count:,} {species}  |  {regs}"
