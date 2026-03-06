@@ -1,1 +1,68 @@
-[]
+[
+  {
+    "FKintLocationID": 45,
+    "LOCATION": "Gunpowder Falls, Upper",
+    "County": "Baltimore",
+    "NumOfFish": "800",
+    "Species": "Rainbow/Golden",
+    "RegulationDetails": "Put and Take",
+    "ActivityDate": "2026-02-18T00:00:00",
+    "ClosureCode": 1,
+    "_species_abbr": "Rainbow/Golden"
+  },
+  {
+    "FKintLocationID": 45,
+    "LOCATION": "Gunpowder Falls, Upper",
+    "County": "Baltimore",
+    "NumOfFish": "700",
+    "Species": "Rainbow/Golden",
+    "RegulationDetails": "Put and Take",
+    "ActivityDate": "2025-10-28T00:00:00",
+    "ClosureCode": 1,
+    "_species_abbr": "Rainbow/Golden"
+  },
+  {
+    "FKintLocationID": 45,
+    "LOCATION": "Gunpowder Falls, Upper",
+    "County": "Baltimore",
+    "NumOfFish": "1760",
+    "Species": "Rainbow",
+    "RegulationDetails": "Put and Take",
+    "ActivityDate": "2025-04-10T00:00:00",
+    "ClosureCode": 1,
+    "_species_abbr": "RB"
+  },
+  {
+    "FKintLocationID": 69,
+    "LOCATION": "Little Gunpowder Falls",
+    "County": "Baltimore",
+    "NumOfFish": "880",
+    "Species": "Rainbow",
+    "RegulationDetails": "Put and Take",
+    "ActivityDate": "2025-04-09T00:00:00",
+    "ClosureCode": 1,
+    "_species_abbr": "RB"
+  },
+  {
+    "FKintLocationID": 69,
+    "LOCATION": "Little Gunpowder Falls",
+    "County": "Baltimore",
+    "NumOfFish": "1800",
+    "Species": "Rainbow",
+    "RegulationDetails": "Put and Take",
+    "ActivityDate": "2025-03-20T00:00:00",
+    "ClosureCode": 1,
+    "_species_abbr": "RB"
+  },
+  {
+    "FKintLocationID": 45,
+    "LOCATION": "Gunpowder Falls, Upper",
+    "County": "Baltimore",
+    "NumOfFish": "1700",
+    "Species": "Rainbow",
+    "RegulationDetails": "Put and Take",
+    "ActivityDate": "2025-03-18T00:00:00",
+    "ClosureCode": 1,
+    "_species_abbr": "RB"
+  }
+]

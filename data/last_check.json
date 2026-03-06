@@ -1,8 +1,15 @@
 {
-  "timestamp": null,
-  "changed": false,
-  "first_run": true,
+  "timestamp": "2026-03-06T20:25:45.576106+00:00",
+  "changed": true,
+  "first_run": false,
   "error": null,
-  "new_keys": [],
+  "new_keys": [
+    "2025-04-09T00:00:00|Little Gunpowder Falls|Rainbow|880",
+    "2025-10-28T00:00:00|Gunpowder Falls, Upper|Rainbow/Golden|700",
+    "2025-04-10T00:00:00|Gunpowder Falls, Upper|Rainbow|1760",
+    "2026-02-18T00:00:00|Gunpowder Falls, Upper|Rainbow/Golden|800",
+    "2025-03-18T00:00:00|Gunpowder Falls, Upper|Rainbow|1700",
+    "2025-03-20T00:00:00|Little Gunpowder Falls|Rainbow|1800"
+  ],
   "gone_rows": []
 }
