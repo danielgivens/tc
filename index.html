@@ -4,12 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gunpowder Falls Trout Stocking</title>
-  <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
   <script>
-    window.OneSignalDeferred = window.OneSignalDeferred || [];
-    OneSignalDeferred.push(async function(OneSignal) {
-      await OneSignal.init({ appId: "REPLACE_WITH_ONESIGNAL_APP_ID" });
-    });
+    const ONESIGNAL_APP_ID = "REPLACE_WITH_ONESIGNAL_APP_ID";
+    if (ONESIGNAL_APP_ID && !ONESIGNAL_APP_ID.startsWith("REPLACE")) {
+      const s = document.createElement("script");
+      s.src = "https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js";
+      s.defer = true;
+      document.head.appendChild(s);
+      window.OneSignalDeferred = window.OneSignalDeferred || [];
+      OneSignalDeferred.push(async function(OneSignal) {
+        await OneSignal.init({ appId: ONESIGNAL_APP_ID });
+      });
+    }
   </script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -298,6 +304,13 @@ async function load() {
       fetch('data/gunpowder_rows.json?t=' + Date.now()),
       fetch('data/last_check.json?t=' + Date.now()),
     ]);
+
+    if (!rowsRes.ok || !metaRes.ok) {
+      document.getElementById('content').innerHTML =
+        '<div class="empty-state">No data yet — run the GitHub Actions workflow once to save a baseline.</div>';
+      document.getElementById('last-checked').textContent = '⏱ Never checked';
+      return;
+    }
 
     const rows = await rowsRes.json();
     const meta = await metaRes.json();
