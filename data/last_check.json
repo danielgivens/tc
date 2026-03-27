@@ -1,31 +1,8 @@
 {
-  "timestamp": "2026-03-27T14:39:39.677913+00:00",
-  "changed": true,
+  "timestamp": "2026-03-27T19:17:01.008302+00:00",
+  "changed": false,
   "first_run": false,
   "error": null,
   "new_keys": [],
-  "gone_rows": [
-    {
-      "FKintLocationID": 45,
-      "LOCATION": "Gunpowder Falls, Upper",
-      "County": "Baltimore",
-      "NumOfFish": "1700",
-      "Species": "Rainbow",
-      "RegulationDetails": "Put and Take",
-      "ActivityDate": "2025-03-18T00:00:00",
-      "ClosureCode": 1,
-      "_species_abbr": "RB"
-    },
-    {
-      "FKintLocationID": 69,
-      "LOCATION": "Little Gunpowder Falls",
-      "County": "Baltimore",
-      "NumOfFish": "1800",
-      "Species": "Rainbow",
-      "RegulationDetails": "Put and Take",
-      "ActivityDate": "2025-03-20T00:00:00",
-      "ClosureCode": 1,
-      "_species_abbr": "RB"
-    }
-  ]
+  "gone_rows": []
 }
