@@ -42,27 +42,5 @@
     "ActivityDate": "2025-04-09T00:00:00",
     "ClosureCode": 1,
     "_species_abbr": "RB"
-  },
-  {
-    "FKintLocationID": 69,
-    "LOCATION": "Little Gunpowder Falls",
-    "County": "Baltimore",
-    "NumOfFish": "1800",
-    "Species": "Rainbow",
-    "RegulationDetails": "Put and Take",
-    "ActivityDate": "2025-03-20T00:00:00",
-    "ClosureCode": 1,
-    "_species_abbr": "RB"
-  },
-  {
-    "FKintLocationID": 45,
-    "LOCATION": "Gunpowder Falls, Upper",
-    "County": "Baltimore",
-    "NumOfFish": "1700",
-    "Species": "Rainbow",
-    "RegulationDetails": "Put and Take",
-    "ActivityDate": "2025-03-18T00:00:00",
-    "ClosureCode": 1,
-    "_species_abbr": "RB"
   }
 ]
